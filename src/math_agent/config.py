@@ -7,7 +7,7 @@ class AgentConfig:
 
     solver_temperature: float = 0.7
     verifier_temperature: float = 0.1
-    max_verification_iterations: int = 30
+    max_verification_iterations: int = 20
     required_consecutive_validations: int = 5
     max_consecutive_errors: int = 10
     max_tokens: int = 8192
