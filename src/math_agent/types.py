@@ -28,5 +28,4 @@ class VerificationResult:
     """Result of verifying a solution."""
 
     is_valid: bool
-    confidence: float  # 0.0 to 1.0
     bug_report: str  # Empty if is_valid is True

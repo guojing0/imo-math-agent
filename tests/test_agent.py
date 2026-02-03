@@ -70,28 +70,28 @@ class TestVerificationParsing(unittest.TestCase):
 
         result = parse_verification_response("yes")
         self.assertTrue(result.is_valid)
-        self.assertEqual(result.confidence, 1.0)
+        self.assertEqual(result.bug_report, "")
 
     def test_exact_no(self):
         from math_agent.verification import parse_verification_response
 
         result = parse_verification_response("no")
         self.assertFalse(result.is_valid)
-        self.assertEqual(result.confidence, 1.0)
+        self.assertEqual(result.bug_report, "no")
 
     def test_starts_with_yes(self):
         from math_agent.verification import parse_verification_response
 
         result = parse_verification_response("Yes, the solution is correct.")
         self.assertTrue(result.is_valid)
-        self.assertGreaterEqual(result.confidence, 0.8)
+        self.assertEqual(result.bug_report, "")
 
     def test_starts_with_no(self):
         from math_agent.verification import parse_verification_response
 
         result = parse_verification_response("No, there are errors in the proof.")
         self.assertFalse(result.is_valid)
-        self.assertGreaterEqual(result.confidence, 0.8)
+        self.assertEqual(result.bug_report, "No, there are errors in the proof.")
 
     def test_keyword_analysis_positive(self):
         from math_agent.verification import parse_verification_response

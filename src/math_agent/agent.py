@@ -86,11 +86,7 @@ class MathAgent:
             if verification.is_valid:
                 correct_count += 1
                 error_count = 0
-                logger.info(
-                    f"Solution verified as valid "
-                    f"(confidence: {verification.confidence:.2f}). "
-                    f"Streak: {correct_count}"
-                )
+                logger.info(f"Solution verified as valid. Streak: {correct_count}")
 
             if correct_count >= self.config.required_consecutive_validations:
                 logger.info(
@@ -181,7 +177,6 @@ class MathAgent:
         if not result.is_valid:
             return VerificationResult(
                 is_valid=False,
-                confidence=result.confidence,
                 bug_report=verification_log,
             )
 
