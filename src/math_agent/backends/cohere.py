@@ -70,20 +70,16 @@ class CohereBackend(LLMBackend):
 
         if response.message and response.message.content:
             content_blocks = response.message.content
-            thinking_text = ""
             final_text = ""
 
             if isinstance(content_blocks, list):
                 for block in content_blocks:
                     if block.type == "thinking":
-                        thinking_text += block.thinking
+                        pass
                     elif block.type == "text":
                         final_text += block.text
             else:
                 final_text = str(content_blocks)
-
-            if thinking_text:
-                logger.info(f"Thinking Trace for request:\n{thinking_text}")
 
             return final_text
 
