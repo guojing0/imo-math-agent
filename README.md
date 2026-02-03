@@ -19,7 +19,7 @@ This project uses `uv` for dependency management.
 3.  **Environment Variables:**
     Create a `.env` file in the root directory and add your API keys:
     ```bash
-    CO_API_KEY=your_cohere_key
+    COHERE_API_KEY=your_cohere_key
     OPENAI_API_KEY=your_openai_key
     ANTHROPIC_API_KEY=your_anthropic_key
     GOOGLE_API_KEY=your_google_key

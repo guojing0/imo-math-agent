@@ -10,10 +10,10 @@ from .gemini import GeminiBackend
 
 # Default models for each backend
 DEFAULT_MODELS = {
-    "cohere": "command-r-08-2024",
-    "openai": "gpt-4o",
-    "anthropic": "claude-3-5-sonnet-20240620",
-    "gemini": "gemini-1.5-pro",
+    "cohere": "command-a-reasoning-08-2025",
+    "openai": "gpt-5.2-2025-12-11",
+    "anthropic": "claude-sonnet-4-5",
+    "gemini": "gemini-2.5-pro",
 }
 
 

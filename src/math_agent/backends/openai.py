@@ -42,7 +42,7 @@ class OpenAIBackend(LLMBackend):
             model=self.model,
             messages=messages,
             temperature=temperature,
-            max_tokens=self.config.max_tokens,
+            max_completion_tokens=self.config.max_tokens,
         )
 
         return response.choices[0].message.content or ""

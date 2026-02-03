@@ -19,9 +19,9 @@ class CohereBackend(LLMBackend):
         config: Optional[AgentConfig] = None,
     ):
         super().__init__(config)
-        self.api_key = api_key or os.getenv("CO_API_KEY")
+        self.api_key = api_key or os.getenv("COHERE_API_KEY")
         if not self.api_key:
-            raise ValueError("CO_API_KEY environment variable not set.")
+            raise ValueError("COHERE_API_KEY environment variable not set.")
 
         # Use V2 client for all interactions
         try:
