@@ -1,0 +1,21 @@
+[project]
+name = "cohere-math-agent"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "anthropic>=0.75.0",
+    "cohere>=5.20.1",
+    "google-genai>=1.57.0",
+    "openai>=2.15.0",
+    "python-dotenv>=1.2.1",
+    "typer>=0.21.1",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
