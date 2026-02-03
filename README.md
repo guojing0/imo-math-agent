@@ -60,10 +60,3 @@ uv run python main.py problem.txt -b openai -m gpt-4o --v-backend anthropic --v-
 *   **`src/math_agent/agent.py`**: Core agent logic (Initial Solution -> Self-Improvement -> Verification Loop).
 *   **`src/math_agent/backends/`**: Modular backend system for different LLM providers.
 *   **`src/math_agent/prompts.py`**: System prompts for solving and verification.
-
-## Testing
-
-Run unit tests:
-```bash
-PYTHONPATH=src uv run python -m unittest tests/test_agent.py
-```
