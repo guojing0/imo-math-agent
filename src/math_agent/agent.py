@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional
+from typing import Optional
 
 from .backends.base import LLMBackend
 from .config import AgentConfig
@@ -31,7 +31,6 @@ class MathAgent:
     def solve(
         self,
         problem_statement: str,
-        other_prompts: Optional[List[str]] = None,
         max_iterations: Optional[int] = None,
     ) -> Optional[str]:
         """
@@ -39,7 +38,6 @@ class MathAgent:
 
         Args:
             problem_statement: The problem to solve.
-            other_prompts: Additional prompts/hints to include.
             max_iterations: Override for max verification iterations.
 
         Returns:
@@ -49,13 +47,13 @@ class MathAgent:
         logger.info("Starting solution process...")
 
         # 1. Initial Exploration
-        solution = self._initial_exploration(problem_statement, other_prompts)
+        solution = self._initial_exploration(problem_statement)
         if not solution:
             logger.error("Failed to generate initial solution.")
             return None
 
         # 2. Self Improvement
-        solution = self._self_improvement(problem_statement, solution, other_prompts)
+        solution = self._self_improvement(problem_statement, solution)
 
         # 3. Initial Verification
         verification = self._verify_solution(problem_statement, solution)
@@ -77,7 +75,7 @@ class MathAgent:
                 logger.info("Verification failed. Attempting correction...")
 
                 solution = self._correct_solution(
-                    problem_statement, solution, verification.bug_report, other_prompts
+                    problem_statement, solution, verification.bug_report
                 )
 
             # Re-verify
@@ -102,14 +100,11 @@ class MathAgent:
         logger.info("Max iterations reached without success.")
         return None
 
-    def _initial_exploration(
-        self, problem_statement: str, other_prompts: Optional[List[str]]
-    ) -> str:
+    def _initial_exploration(self, problem_statement: str) -> str:
         logger.info("Generating initial solution...")
         return self.backend.generate(
             system_prompt=STEP1_PROMPT,
             user_prompt=problem_statement,
-            other_prompts=other_prompts,
             temperature=self.config.solver_temperature,
         )
 
@@ -117,7 +112,6 @@ class MathAgent:
         self,
         problem_statement: str,
         current_solution: str,
-        other_prompts: Optional[List[str]],
     ) -> str:
         logger.info("Self-improving solution...")
         combined_prompt = (
@@ -128,7 +122,6 @@ class MathAgent:
         return self.backend.generate(
             system_prompt=STEP1_PROMPT,
             user_prompt=combined_prompt,
-            other_prompts=other_prompts,
             temperature=self.config.solver_temperature,
         )
 
@@ -187,7 +180,6 @@ class MathAgent:
         problem_statement: str,
         current_solution: str,
         bug_report: str,
-        other_prompts: Optional[List[str]],
     ) -> str:
         combined_prompt = (
             f"Problem:\n{problem_statement}\n\n"
@@ -199,6 +191,5 @@ class MathAgent:
         return self.backend.generate(
             system_prompt=STEP1_PROMPT,
             user_prompt=combined_prompt,
-            other_prompts=other_prompts,
             temperature=self.config.solver_temperature,
         )

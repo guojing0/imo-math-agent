@@ -47,9 +47,6 @@ def main(
     ),
     max_runs: int = typer.Option(10, help="Maximum number of full attempts."),
     output: Optional[str] = typer.Option(None, help="File to save the solution."),
-    other_prompts: Optional[str] = typer.Option(
-        None, help="Comma-separated list of other prompts."
-    ),
     solver_temperature: float = typer.Option(
         0.7, "--solver-temp", help="Temperature for solver model."
     ),
@@ -74,8 +71,6 @@ def main(
     except FileNotFoundError:
         logger.error(f"Problem file not found: {problem_file}")
         raise typer.Exit(code=1)
-
-    prompts_list = other_prompts.split(",") if other_prompts else []
 
     # Create config with CLI overrides
     config = AgentConfig(
@@ -106,7 +101,7 @@ def main(
 
     for i in range(max_runs):
         logger.info(f"========== Full Attempt {i+1}/{max_runs} ==========")
-        solution = agent.solve(problem_statement, other_prompts=prompts_list)
+        solution = agent.solve(problem_statement)
 
         if solution:
             logger.info("Found a correct solution!")

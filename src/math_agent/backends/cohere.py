@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import List, Optional
+from typing import Optional
 
 import cohere
 
@@ -38,24 +38,20 @@ class CohereBackend(LLMBackend):
         self,
         system_prompt: str,
         user_prompt: str,
-        other_prompts: Optional[List[str]] = None,
         temperature: float = 0.7,
     ) -> str:
         if self.use_v2:
-            return self._generate_v2(system_prompt, user_prompt, other_prompts, temperature)
+            return self._generate_v2(system_prompt, user_prompt, temperature)
         else:
-            return self._generate_v1(system_prompt, user_prompt, other_prompts, temperature)
+            return self._generate_v1(system_prompt, user_prompt, temperature)
 
     def _generate_v2(
         self,
         system_prompt: str,
         user_prompt: str,
-        other_prompts: Optional[List[str]],
         temperature: float,
     ) -> str:
-        # Build conversation and merge consecutive user messages
-        conversation = self.build_conversation(system_prompt, user_prompt, other_prompts)
-        conversation = self.merge_consecutive_messages(conversation)
+        conversation = self.build_conversation(system_prompt, user_prompt)
 
         # Convert to Cohere format
         messages = []
@@ -89,17 +85,11 @@ class CohereBackend(LLMBackend):
         self,
         system_prompt: str,
         user_prompt: str,
-        other_prompts: Optional[List[str]],
         temperature: float,
     ) -> str:
-        # V1 uses simpler format
-        message = user_prompt
-        if other_prompts:
-            message += "\n\n" + "\n\n".join(other_prompts)
-
         response = self.client.chat(
             model=self.model,
-            message=message,
+            message=user_prompt,
             preamble=system_prompt,
             temperature=temperature,
         )

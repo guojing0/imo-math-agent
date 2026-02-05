@@ -1,5 +1,5 @@
 import os
-from typing import List, Optional
+from typing import Optional
 
 import anthropic
 
@@ -26,13 +26,10 @@ class AnthropicBackend(LLMBackend):
         self,
         system_prompt: str,
         user_prompt: str,
-        other_prompts: Optional[List[str]] = None,
         temperature: float = 0.7,
     ) -> str:
         # Build conversation - exclude system from messages (Anthropic uses separate param)
-        conversation = self.build_conversation("", user_prompt, other_prompts)
-        # Merge consecutive user messages (Anthropic requires alternating roles)
-        conversation = self.merge_consecutive_messages(conversation)
+        conversation = self.build_conversation("", user_prompt)
 
         # Convert to Anthropic format
         messages = []

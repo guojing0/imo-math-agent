@@ -1,5 +1,5 @@
 import os
-from typing import List, Optional
+from typing import Optional
 
 from google import genai
 from google.genai import types
@@ -27,12 +27,9 @@ class GeminiBackend(LLMBackend):
         self,
         system_prompt: str,
         user_prompt: str,
-        other_prompts: Optional[List[str]] = None,
         temperature: float = 0.7,
     ) -> str:
-        # Build conversation and merge consecutive messages
-        conversation = self.build_conversation("", user_prompt, other_prompts)
-        conversation = self.merge_consecutive_messages(conversation)
+        conversation = self.build_conversation("", user_prompt)
 
         # Convert to Gemini multi-turn format
         # Gemini expects list of Content objects with parts

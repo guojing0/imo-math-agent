@@ -1,5 +1,5 @@
 import os
-from typing import List, Optional
+from typing import Optional
 
 from openai import OpenAI
 
@@ -26,12 +26,9 @@ class OpenAIBackend(LLMBackend):
         self,
         system_prompt: str,
         user_prompt: str,
-        other_prompts: Optional[List[str]] = None,
         temperature: float = 0.7,
     ) -> str:
-        # Build conversation and merge consecutive user messages
-        conversation = self.build_conversation(system_prompt, user_prompt, other_prompts)
-        conversation = self.merge_consecutive_messages(conversation)
+        conversation = self.build_conversation(system_prompt, user_prompt)
 
         # Convert to OpenAI format
         messages = []

@@ -1,7 +1,7 @@
 import logging
 import time
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import Optional
 
 from ..config import AgentConfig
 from ..types import Conversation, Message, MessageRole
@@ -19,7 +19,6 @@ class LLMBackend(ABC):
         self,
         system_prompt: str,
         user_prompt: str,
-        other_prompts: Optional[List[str]] = None,
         temperature: float = 0.7,
     ) -> str:
         """
@@ -34,7 +33,6 @@ class LLMBackend(ABC):
                 return self._generate_impl(
                     system_prompt=system_prompt,
                     user_prompt=user_prompt,
-                    other_prompts=other_prompts,
                     temperature=temperature,
                 )
             except Exception as e:
@@ -58,7 +56,6 @@ class LLMBackend(ABC):
         self,
         system_prompt: str,
         user_prompt: str,
-        other_prompts: Optional[List[str]] = None,
         temperature: float = 0.7,
     ) -> str:
         """Actual implementation of text generation. Subclasses must implement this."""
@@ -68,18 +65,13 @@ class LLMBackend(ABC):
         self,
         system_prompt: str,
         user_prompt: str,
-        other_prompts: Optional[List[str]] = None,
     ) -> Conversation:
         """
         Build a standardized conversation from prompts.
 
         Creates a properly structured conversation with:
         - System message (if provided)
-        - Initial user message
-        - Additional user messages from other_prompts
-
-        Note: consecutive same-role messages are NOT merged here.
-        Subclasses should use merge_consecutive_messages if their API requires it.
+        - User message
         """
         messages: Conversation = []
 
@@ -88,32 +80,4 @@ class LLMBackend(ABC):
 
         messages.append(Message(role=MessageRole.USER, content=user_prompt))
 
-        if other_prompts:
-            for prompt in other_prompts:
-                messages.append(Message(role=MessageRole.USER, content=prompt))
-
         return messages
-
-    @staticmethod
-    def merge_consecutive_messages(conversation: Conversation) -> Conversation:
-        """
-        Merge consecutive messages with the same role.
-
-        This is useful for APIs that don't support consecutive messages
-        with the same role (e.g., Anthropic).
-        """
-        if not conversation:
-            return []
-
-        merged: Conversation = []
-        for msg in conversation:
-            if merged and merged[-1].role == msg.role:
-                # Merge with previous message
-                merged[-1] = Message(
-                    role=msg.role,
-                    content=merged[-1].content + "\n\n" + msg.content,
-                )
-            else:
-                merged.append(msg)
-
-        return merged
