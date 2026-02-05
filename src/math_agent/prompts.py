@@ -1,4 +1,3 @@
-
 STEP1_PROMPT = """
 ### Core Instructions ###
 
@@ -100,7 +99,6 @@ Your response MUST be structured into two main sections: a **Summary** followed 
     *   **Issue:** Critical Error - This step is a logical fallacy. Subtracting inequalities in this manner is not a valid mathematical operation.
 
 """
-
 
 VERIFICATION_REMINDER = """
 ### Verification Task Reminder ###

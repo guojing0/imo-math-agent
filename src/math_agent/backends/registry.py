@@ -8,7 +8,6 @@ from .anthropic import AnthropicBackend
 from .gemini import GeminiBackend
 
 
-# Default models for each backend
 DEFAULT_MODELS = {
     "cohere": "command-a-reasoning-08-2025",
     "openai": "gpt-5.2-2025-12-11",
