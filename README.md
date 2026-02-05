@@ -1,6 +1,6 @@
 # Cohere Math Agent
 
-An AI agent system for solving IMO and Putnam problems, inspired by the IMO25 project but implemented with modern software engineering practices and supporting multiple LLM backends (Cohere, OpenAI, Anthropic, Gemini, DeepSeek).
+An AI agent system for solving IMO and Putnam problems, inspired by the IMO25 project but implemented with modern software engineering practices and supporting multiple LLM backends (Cohere, OpenAI, Anthropic, Gemini, DeepSeek, OpenRouter).
 
 ## Setup
 
@@ -22,6 +22,7 @@ An AI agent system for solving IMO and Putnam problems, inspired by the IMO25 pr
     ANTHROPIC_API_KEY=your_anthropic_key
     GOOGLE_API_KEY=your_google_key
     DEEPSEEK_API_KEY=your_deepseek_key
+    OPENROUTER_API_KEY=your_openrouter_key
     ```
 
 ## Usage
@@ -40,7 +41,7 @@ uv run python main.py problem.txt --backend cohere
 
 ### Options
 
-*   `--backend`, `-b` (Default: `cohere`): Choose the backend for solving (`cohere`, `openai`, `anthropic`, `gemini`, or `deepseek`).
+*   `--backend`, `-b` (Default: `cohere`): Choose the backend for solving (`cohere`, `openai`, `anthropic`, `gemini`, `deepseek`, or `openrouter`).
 *   `--model`, `-m`: Specify a specific model for solving.
 *   `--v-backend`: Choose a different backend for verification.
 *   `--v-model`: Specify a different model for verification.
