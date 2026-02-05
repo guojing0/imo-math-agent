@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 class CohereBackend(LLMBackend):
     def __init__(
         self,
+        model: str,
         api_key: Optional[str] = None,
-        model: str = "command-r-08-2024",
         config: Optional[AgentConfig] = None,
     ):
         super().__init__(config)

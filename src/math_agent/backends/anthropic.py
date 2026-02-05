@@ -11,8 +11,8 @@ from .base import LLMBackend
 class AnthropicBackend(LLMBackend):
     def __init__(
         self,
+        model: str,
         api_key: Optional[str] = None,
-        model: str = "claude-3-5-sonnet-20240620",
         config: Optional[AgentConfig] = None,
     ):
         super().__init__(config)

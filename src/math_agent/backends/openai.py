@@ -11,8 +11,8 @@ from .base import LLMBackend
 class OpenAIBackend(LLMBackend):
     def __init__(
         self,
+        model: str,
         api_key: Optional[str] = None,
-        model: str = "gpt-4o",
         config: Optional[AgentConfig] = None,
     ):
         super().__init__(config)

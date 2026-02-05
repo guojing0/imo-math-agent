@@ -12,8 +12,8 @@ from .base import LLMBackend
 class GeminiBackend(LLMBackend):
     def __init__(
         self,
+        model: str,
         api_key: Optional[str] = None,
-        model: str = "gemini-1.5-pro",
         config: Optional[AgentConfig] = None,
     ):
         super().__init__(config)
