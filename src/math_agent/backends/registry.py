@@ -16,7 +16,7 @@ DEFAULT_MODELS = {
     "anthropic": "claude-sonnet-4-5",
     "gemini": "gemini-2.5-pro",
     "deepseek": "deepseek-reasoner",
-    "openrouter": "deepseek/deepseek-prover-v2",
+    "openrouter": "deepseek/deepseek-v3.2-speciale",
 }
 
 def get_backend(

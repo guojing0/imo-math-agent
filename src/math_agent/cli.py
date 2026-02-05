@@ -5,7 +5,7 @@ import typer
 from dotenv import load_dotenv
 
 from math_agent.agent import MathAgent
-from math_agent.backends.registry import get_backend, list_backends
+from math_agent.backends.registry import get_backend
 from math_agent.config import AgentConfig
 
 # Load environment variables
@@ -27,7 +27,7 @@ def main(
         "cohere",
         "-b",
         "--backend",
-        help=f"Backend to use for solving: {', '.join(list_backends())}",
+        help=f"Backend to use for solving: cohere, openai, anthropic, gemini, deepseek, openrouter",
     ),
     model: Optional[str] = typer.Option(
         None,
