@@ -4,8 +4,6 @@ An AI agent system for solving IMO and Putnam problems, inspired by the IMO25 pr
 
 ## Setup
 
-This project uses `uv` for dependency management.
-
 1.  **Install uv:**
     ```bash
     curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -30,33 +28,41 @@ This project uses `uv` for dependency management.
 Run the agent using the CLI:
 
 ```bash
+uv run mo-agent example_problem.txt --backend cohere
+```
+
+You can also use `uv run python main.py` directly:
+
+```bash
 uv run python main.py problem.txt --backend cohere
 ```
 
 ### Options
 
-*   `--backend`, `-b`: Choose the backend for solving (`cohere`, `openai`, `anthropic`, `gemini`). Default is `cohere`.
-*   `--model`, `-m`: Specify a model name for solving. Defaults to backend-specific best model.
+*   `--backend`, `-b` (Default: `cohere`): Choose the backend for solving (`cohere`, `openai`, `anthropic`, or `gemini`).
+*   `--model`, `-m`: Specify a specific model for solving.
 *   `--v-backend`: Choose a different backend for verification.
-*   `--v-model`: Specify a different model name for verification.
-*   `--max-runs`: Maximum number of full attempts (outer loop). Default is 10.
+*   `--v-model`: Specify a different model for verification.
+*   `--max-runs` (Default: 10): Maximum number of full attempts.
 *   `--output`: File to save the final solution.
-*   `--other-prompts`: Additional prompts or hints (comma-separated).
+*   `--solver-temp` (Default: 0.7): Temperature for solver model.
+*   `--verifier-temp` (Default 0.1): Temperature for verifier model.
 
 ### Examples
 
-**Use Cohere Command R Plus for solving and Command R for verification:**
+**Use Cohere for solving with a specific model for verification:**
 ```bash
-uv run python main.py problem.txt -b cohere -m command-r-plus --v-model command-r-08-2024
+uv run mo-agent problem.txt -b cohere --v-model command-r-08-2024
 ```
 
-**Use OpenAI GPT-4o for solving and Claude 3.5 Sonnet for verification:**
+**Use OpenAI for solving and Anthropic for verification:**
 ```bash
-uv run python main.py problem.txt -b openai -m gpt-4o --v-backend anthropic --v-model claude-3-5-sonnet-20240620
+uv run mo-agent problem.txt -b openai --v-backend anthropic
 ```
 
 ## Architecture
 
+*   **`src/math_agent/cli.py`**: CLI entry point.
 *   **`src/math_agent/agent.py`**: Core agent logic (Initial Solution -> Self-Improvement -> Verification Loop).
-*   **`src/math_agent/backends/`**: Modular backend system for different LLM providers.
-*   **`src/math_agent/prompts.py`**: System prompts for solving and verification.
+*   **`src/math_agent/backends/`**: Backends for different LLM providers.
+*   **`src/math_agent/prompts.py`**: Prompts for solving and verification.
