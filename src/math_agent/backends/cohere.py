@@ -5,7 +5,6 @@ from typing import Optional
 import cohere
 
 from ..config import AgentConfig
-from ..types import Message, MessageRole
 from .base import LLMBackend
 
 logger = logging.getLogger(__name__)
@@ -23,14 +22,7 @@ class CohereBackend(LLMBackend):
         if not self.api_key:
             raise ValueError("COHERE_API_KEY environment variable not set.")
 
-        # Use V2 client for all interactions
-        try:
-            self.client = cohere.ClientV2(self.api_key)
-            self.use_v2 = True
-        except AttributeError:
-            # Fallback for older SDKs
-            self.client = cohere.Client(self.api_key)
-            self.use_v2 = False
+        self.client = cohere.ClientV2(self.api_key)
 
         self.model = model
 
@@ -39,17 +31,6 @@ class CohereBackend(LLMBackend):
         system_prompt: str,
         user_prompt: str,
         temperature: float = 0.7,
-    ) -> str:
-        if self.use_v2:
-            return self._generate_v2(system_prompt, user_prompt, temperature)
-        else:
-            return self._generate_v1(system_prompt, user_prompt, temperature)
-
-    def _generate_v2(
-        self,
-        system_prompt: str,
-        user_prompt: str,
-        temperature: float,
     ) -> str:
         conversation = self.build_conversation(system_prompt, user_prompt)
 
@@ -80,17 +61,3 @@ class CohereBackend(LLMBackend):
             return final_text
 
         return ""
-
-    def _generate_v1(
-        self,
-        system_prompt: str,
-        user_prompt: str,
-        temperature: float,
-    ) -> str:
-        response = self.client.chat(
-            model=self.model,
-            message=user_prompt,
-            preamble=system_prompt,
-            temperature=temperature,
-        )
-        return response.text
