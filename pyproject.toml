@@ -13,6 +13,9 @@ dependencies = [
     "typer>=0.21.1",
 ]
 
+[project.scripts]
+mo-agent = "math_agent.cli:app"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
