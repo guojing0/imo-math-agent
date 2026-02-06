@@ -27,7 +27,7 @@ def main(
         "cohere",
         "-b",
         "--backend",
-        help=f"Backend to use for solving: cohere, openai, anthropic, gemini, deepseek, openrouter",
+        help=f"Backend to use for solving: cohere, openai, anthropic, gemini",
     ),
     model: Optional[str] = typer.Option(
         None,

@@ -6,8 +6,6 @@ from .cohere import CohereBackend
 from .openai import OpenAIBackend
 from .anthropic import AnthropicBackend
 from .gemini import GeminiBackend
-from .deepseek import DeepSeekBackend
-from .openrouter import OpenRouterBackend
 
 
 DEFAULT_MODELS = {
@@ -15,8 +13,6 @@ DEFAULT_MODELS = {
     "openai": "gpt-5.2-2025-12-11",
     "anthropic": "claude-sonnet-4-5",
     "gemini": "gemini-2.5-pro",
-    "deepseek": "deepseek-reasoner",
-    "openrouter": "deepseek/deepseek-v3.2-speciale",
 }
 
 def get_backend(
@@ -28,7 +24,7 @@ def get_backend(
     Factory function to create a backend by name.
 
     Args:
-        name: Backend name - one of "cohere", "openai", "anthropic", "gemini", "deepseek", "openrouter"
+        name: Backend name - one of "cohere", "openai", "anthropic", "gemini"
         model: Optional model name. Uses backend-specific default if not provided.
         config: Optional AgentConfig for retry settings, etc.
 
@@ -49,10 +45,6 @@ def get_backend(
         return AnthropicBackend(model=model_name or DEFAULT_MODELS["anthropic"], config=config)
     elif backend_name == "gemini":
         return GeminiBackend(model=model_name or DEFAULT_MODELS["gemini"], config=config)
-    elif backend_name == "deepseek":
-        return DeepSeekBackend(model=model_name or DEFAULT_MODELS["deepseek"], config=config)
-    elif backend_name == "openrouter":
-        return OpenRouterBackend(model=model_name or DEFAULT_MODELS["openrouter"], config=config)
     else:
         available = ", ".join(DEFAULT_MODELS.keys())
         raise ValueError(f"Unknown backend: {name}. Available backends: {available}")
