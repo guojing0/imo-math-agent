@@ -1,5 +1,3 @@
 *** Problem Statement ***
 
-You can see any mathematics knowledge to solve the following problem.
-
 Use 3, 3, 7, 7 to complete the 24 game.
