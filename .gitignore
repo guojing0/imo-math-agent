@@ -10,3 +10,4 @@ wheels/
 .venv
 .env
 src/.DS_Store
+.DS_Store
