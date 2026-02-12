@@ -3,21 +3,29 @@ from typing import Optional
 
 from .backends.base import LLMBackend
 from .config import AgentConfig
+from .prompting import (
+    build_correction_prompt,
+    build_self_improvement_prompt,
+    build_verification_prompt,
+)
 from .prompts import (
-    CORRECTION_PROMPT,
-    SELF_IMPROVEMENT_PROMPT,
     STEP1_PROMPT,
-    VERIFICATION_REMINDER,
     VERIFICATION_SYSTEM_PROMPT,
 )
 from .types import VerificationResult
 from .utils import extract_detailed_solution
-from .verification import parse_verification_response
+from .verification import summarize_verification
 
 logger = logging.getLogger(__name__)
 
 
 class MathAgent:
+    DETAILED_SOLUTION_MARKERS = [
+        "### Detailed Solution ###",
+        "## Detailed Solution",
+        "Detailed Solution",
+    ]
+
     def __init__(
         self,
         backend: LLMBackend,
@@ -57,7 +65,7 @@ class MathAgent:
 
         # 3. Initial Verification
         verification = self._verify_solution(problem_statement, solution)
-        logger.info(f"Initial Verification Valid: {verification.is_valid}")
+        logger.info("Initial verification valid: %s", verification.is_valid)
 
         correct_count = 1 if verification.is_valid else 0
         error_count = 0
@@ -65,8 +73,11 @@ class MathAgent:
         # 4. Verification Loop
         for i in range(max_iter):
             logger.info(
-                f"Iteration {i+1}/{max_iter} - "
-                f"Correct Streak: {correct_count}, Errors: {error_count}"
+                "Iteration %s/%s - Correct streak: %s, Errors: %s",
+                i + 1,
+                max_iter,
+                correct_count,
+                error_count,
             )
 
             if not verification.is_valid:
@@ -84,12 +95,12 @@ class MathAgent:
             if verification.is_valid:
                 correct_count += 1
                 error_count = 0
-                logger.info(f"Solution verified as valid. Streak: {correct_count}")
+                logger.info("Solution verified as valid. Streak: %s", correct_count)
 
             if correct_count >= self.config.required_consecutive_validations:
                 logger.info(
-                    f"Solution verified {self.config.required_consecutive_validations} "
-                    f"times consecutively. SUCCESS."
+                    "Solution verified %s times consecutively. SUCCESS.",
+                    self.config.required_consecutive_validations,
                 )
                 return solution
 
@@ -114,10 +125,8 @@ class MathAgent:
         current_solution: str,
     ) -> str:
         logger.info("Self-improving solution...")
-        combined_prompt = (
-            f"Problem:\n{problem_statement}\n\n"
-            f"Proposed Solution:\n{current_solution}\n\n"
-            f"{SELF_IMPROVEMENT_PROMPT}"
+        combined_prompt = build_self_improvement_prompt(
+            problem_statement, current_solution
         )
         return self.backend.generate(
             system_prompt=STEP1_PROMPT,
@@ -128,20 +137,10 @@ class MathAgent:
     def _verify_solution(
         self, problem_statement: str, solution: str
     ) -> VerificationResult:
-        dsol = extract_detailed_solution(solution)
-        verification_prompt = f"""
-======================================================================
-### Problem ###
-
-{problem_statement}
-
-======================================================================
-### Solution ###
-
-{dsol}
-
-{VERIFICATION_REMINDER}
-"""
+        dsol = extract_detailed_solution(
+            solution, markers=self.DETAILED_SOLUTION_MARKERS
+        )
+        verification_prompt = build_verification_prompt(problem_statement, dsol)
         # Step 1: Generate verification log
         verification_log = self.verifier_backend.generate(
             system_prompt=VERIFICATION_SYSTEM_PROMPT,
@@ -163,17 +162,8 @@ class MathAgent:
             temperature=self.config.verifier_temperature,
         )
 
-        # Use robust parsing instead of simple string matching
-        result = parse_verification_response(check_response)
-
-        # If invalid, include the full verification log as bug report
-        if not result.is_valid:
-            return VerificationResult(
-                is_valid=False,
-                bug_report=verification_log,
-            )
-
-        return result
+        # Use robust parsing with strict verdict first
+        return summarize_verification(check_response, verification_log)
 
     def _correct_solution(
         self,
@@ -181,11 +171,8 @@ class MathAgent:
         current_solution: str,
         bug_report: str,
     ) -> str:
-        combined_prompt = (
-            f"Problem:\n{problem_statement}\n\n"
-            f"Proposed Solution:\n{current_solution}\n\n"
-            f"Bug Report:\n{bug_report}\n\n"
-            f"{CORRECTION_PROMPT}"
+        combined_prompt = build_correction_prompt(
+            problem_statement, current_solution, bug_report
         )
 
         return self.backend.generate(

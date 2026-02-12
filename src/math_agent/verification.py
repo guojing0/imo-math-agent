@@ -8,7 +8,17 @@ def parse_verification_response(response: str) -> VerificationResult:
 
     Checks for "yes" or "no" indicators in the response text.
     """
-    text = response.strip().lower()
+    stripped = response.strip()
+    text = stripped.lower()
+
+    # Look for a strict final verdict line first
+    lines = [line.strip() for line in stripped.splitlines() if line.strip()]
+    for line in reversed(lines):
+        lowered = line.lower()
+        if lowered in {"final verdict: yes", "final verdict: yes."}:
+            return VerificationResult(is_valid=True, bug_report="")
+        if lowered in {"final verdict: no", "final verdict: no."}:
+            return VerificationResult(is_valid=False, bug_report=response)
 
     # Exact match
     if text == "yes":
@@ -73,3 +83,17 @@ def parse_verification_response(response: str) -> VerificationResult:
         is_valid=False,
         bug_report=f"Ambiguous verification response: {response}",
     )
+
+
+def summarize_verification(
+    decision_response: str, verification_log: str
+) -> VerificationResult:
+    """
+    Convert the verifier decision response into a final VerificationResult.
+
+    Uses the detailed verification log as the bug report when invalid.
+    """
+    decision = parse_verification_response(decision_response)
+    if decision.is_valid:
+        return decision
+    return VerificationResult(is_valid=False, bug_report=verification_log)

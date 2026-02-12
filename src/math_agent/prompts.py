@@ -87,6 +87,10 @@ Your response MUST be structured into two main sections: a **Summary** followed 
 *   **b. Detailed Verification Log**
     Following the summary, provide the full, step-by-step verification log as defined in the Core Instructions. When you refer to a specific part of the solution, **quote the relevant text** to make your reference clear before providing your detailed analysis of that part.
 
+*   **Final Verdict Line**
+    End your response with a single line that is exactly one of the following:
+    `Final Verdict: YES` or `Final Verdict: NO`
+
 **Example of the Required Summary Format**
 *This is a generic example to illustrate the required format. Your findings must be based on the actual solution provided below.*
 
@@ -104,4 +108,5 @@ VERIFICATION_REMINDER = """
 ### Verification Task Reminder ###
 
 Your task is to act as an IMO grader. Now, generate the **summary** and the **step-by-step verification log** for the solution above. In your log, justify each correct step and explain in detail any errors or justification gaps you find, as specified in the instructions above.
+End your response with a single line: `Final Verdict: YES` or `Final Verdict: NO`.
 """
