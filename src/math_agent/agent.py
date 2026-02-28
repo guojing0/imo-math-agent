@@ -4,6 +4,7 @@ from typing import Optional
 from .backends.base import LLMBackend
 from .config import AgentConfig
 from .prompting import (
+    build_check_prompt,
     build_correction_prompt,
     build_self_improvement_prompt,
     build_verification_prompt,
@@ -20,12 +21,6 @@ logger = logging.getLogger(__name__)
 
 
 class MathAgent:
-    DETAILED_SOLUTION_MARKERS = [
-        "### Detailed Solution ###",
-        "## Detailed Solution",
-        "Detailed Solution",
-    ]
-
     def __init__(
         self,
         backend: LLMBackend,
@@ -137,9 +132,7 @@ class MathAgent:
     def _verify_solution(
         self, problem_statement: str, solution: str
     ) -> VerificationResult:
-        dsol = extract_detailed_solution(
-            solution, markers=self.DETAILED_SOLUTION_MARKERS
-        )
+        dsol = extract_detailed_solution(solution)
         verification_prompt = build_verification_prompt(problem_statement, dsol)
         # Step 1: Generate verification log
         verification_log = self.verifier_backend.generate(
@@ -149,12 +142,7 @@ class MathAgent:
         )
 
         # Step 2: Check if verification is positive
-        check_prompt = (
-            'Response in "yes" or "no". '
-            "Is the following statement saying the solution is correct, "
-            "or does not contain critical error or a major justification gap?\n\n"
-            f"{verification_log}"
-        )
+        check_prompt = build_check_prompt(verification_log)
 
         check_response = self.verifier_backend.generate(
             system_prompt="",

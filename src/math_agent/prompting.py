@@ -20,6 +20,15 @@ def build_correction_prompt(
     )
 
 
+def build_check_prompt(verification_log: str) -> str:
+    return (
+        'Response in "yes" or "no". '
+        "Is the following statement saying the solution is correct, "
+        "or does not contain critical error or a major justification gap?\n\n"
+        f"{verification_log}"
+    )
+
+
 def build_verification_prompt(problem_statement: str, detailed_solution: str) -> str:
     return f"""
 ======================================================================

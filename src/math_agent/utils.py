@@ -1,44 +1,36 @@
 import logging
-from typing import Iterable, Optional
+from typing import Sequence
 
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_SOLUTION_MARKERS = [
+    "### Detailed Solution ###",
+    "## Detailed Solution",
+    "Detailed Solution",
+]
+
 
 def extract_detailed_solution(
     text: str,
-    marker: str = "Detailed Solution",
-    after: bool = True,
-    markers: Optional[Iterable[str]] = None,
+    markers: Sequence[str] = DEFAULT_SOLUTION_MARKERS,
 ) -> str:
     """
-    Extract the text after '### Detailed Solution ###' (or similar marker) from a solution.
+    Extract the text after a solution marker (e.g. '### Detailed Solution ###').
 
     Args:
         text: The solution text to extract from.
-        marker: The marker to search for.
-        after: If True, return text after the marker; if False, return text before.
+        markers: Ordered markers to search for; first match wins.
 
     Returns:
-        The extracted text, or empty string if marker not found (when after=True).
+        The text after the marker, or the full text if no marker is found.
     """
-    search_markers = list(markers) if markers is not None else [marker]
     lines = text.split("\n")
 
-    for search_marker in search_markers:
+    for search_marker in markers:
         for i, line in enumerate(lines):
             if search_marker in line:
-                if after:
-                    return "\n".join(lines[i + 1 :]).strip()
-                return "\n".join(lines[:i]).strip()
+                return "\n".join(lines[i + 1 :]).strip()
 
-        # Fallback to string search for inline markers
-        pos = text.find(search_marker)
-        if pos != -1:
-            if after:
-                return text[pos + len(search_marker) :].strip()
-            return text[:pos].strip()
-
-    if after:
-        logger.warning("Detailed solution marker not found; using full solution.")
+    logger.warning("Detailed solution marker not found; using full solution.")
     return text.strip()
