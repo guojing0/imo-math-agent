@@ -1,5 +1,5 @@
 [project]
-name = "cohere-math-agent"
+name = "imo-math-agent"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-mo-agent = "math_agent.cli:app"
+imo-agent = "imo_math_agent.cli:app"
 
 [tool.setuptools.packages.find]
 where = ["src"]

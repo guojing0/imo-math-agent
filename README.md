@@ -1,4 +1,4 @@
-# Cohere Math Agent
+# IMO Math Agent
 
 An AI agent system for solving IMO and Putnam problems, inspired by the IMO25 project but implemented with modern software engineering practices and supporting multiple LLM backends (Cohere, OpenAI, Anthropic, Gemini).
 
@@ -28,7 +28,7 @@ An AI agent system for solving IMO and Putnam problems, inspired by the IMO25 pr
 Run the agent using the CLI:
 
 ```bash
-uv run mo-agent example_problem.txt --backend cohere
+uv run imo-agent example_problem.txt --backend cohere
 ```
 
 You can also use `uv run python main.py` directly:
@@ -52,17 +52,17 @@ uv run python main.py problem.txt --backend cohere
 
 **Use Cohere for solving with a specific model for verification:**
 ```bash
-uv run mo-agent problem.txt -b cohere --v-model command-r-08-2024
+uv run imo-agent problem.txt -b cohere --v-model command-r-08-2024
 ```
 
 **Use OpenAI for solving and Anthropic for verification:**
 ```bash
-uv run mo-agent problem.txt -b openai --v-backend anthropic
+uv run imo-agent problem.txt -b openai --v-backend anthropic
 ```
 
 ## Architecture
 
-*   **`src/math_agent/cli.py`**: CLI entry point.
-*   **`src/math_agent/agent.py`**: Core agent logic (Initial Solution -> Self-Improvement -> Verification Loop).
-*   **`src/math_agent/backends/`**: Backends for different LLM providers.
-*   **`src/math_agent/prompts.py`**: Prompts for solving and verification.
+*   **`src/imo_math_agent/cli.py`**: CLI entry point.
+*   **`src/imo_math_agent/agent.py`**: Core agent logic (Initial Solution -> Self-Improvement -> Verification Loop).
+*   **`src/imo_math_agent/backends/`**: Backends for different LLM providers.
+*   **`src/imo_math_agent/prompts.py`**: Prompts for solving and verification.
